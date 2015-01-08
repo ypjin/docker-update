@@ -24,8 +24,8 @@ mkdir -p ${DOCKER_DIR}
 mv docker-${DOCKER_VERSION} ${DOCKER_FILENAME}
 mv docker-${DOCKER_VERSION}.sig ${DOCKER_SIG_FILENAME}
 chmod +x ${DOCKER_FILENAME}
-echo "=> Copy docker binary to ${DOCKER_DIR}"
-cp -f ${DOCKER_FILENAME} ${DOCKER_DIR}
 echo "=> Copy docker binary signature to ${DOCKER_DIR}"
 cp -f ${DOCKER_SIG_FILENAME} ${DOCKER_DIR}
+echo "=> Copy docker binary to ${DOCKER_DIR}"
+cp -f ${DOCKER_FILENAME} ${DOCKER_DIR}
 echo "=> Done"
