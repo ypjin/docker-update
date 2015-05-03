@@ -11,11 +11,7 @@ tutum/docker-update
 
 ```
 
-**Notices**
+## Notes
 
-```
-Volume is the place you want to copy docker binary to.
-
-`DOCKER_VERSION` is the docker version you want to update, e.g. `1.2.0
-
-```
+The volume (and `$DOCKER_DIR`) is the place you want to copy docker binary to.
+`$DOCKER_VERSION` is the docker version you want to update to, e.g. `1.6.0`
