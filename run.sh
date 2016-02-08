@@ -1,31 +1,32 @@
 #!/bin/sh
-
 set -e
 
-DOCKER_DIR="/usr/lib/tutum/"
-DOCKER_FILENAME="docker.new"
-DOCKER_SIG_FILENAME="docker.new.sig"
-if [ "${DOCKER_VERSION}" == "**ChangeMe**" ]; then
-    echo "ERROR: Need to specify docker version using DOCKER_VERSION environment variable"
-    exit 1
-fi
+# Source config
+FILES_HOST="${FILES_HOST:-https://files.tutum.co}"
+DOCKER_BINARY_FILENAME="docker-${DOCKER_VERSION}"
+DOCKER_BINARY_URL="${DOCKER_BINARY_URL:-${FILES_HOST}/packages/docker/${DOCKER_BINARY_FILENAME}}"
+DOCKER_BINARY_SIGNATURE_URL="${DOCKER_BINARY_SIGNATURE_URL:-${FILES_HOST}/packages/docker/${DOCKER_BINARY_FILENAME}.sig}"
+DOCKER_BINARY_MD5_URL="${DOCKER_BINARY_MD5_URL:-${FILES_HOST}/packages/docker/${DOCKER_BINARY_FILENAME}.md5}"
 
-echo "=> Downloading docker version ${DOCKER_VERSION}"
-curl -sSOL https://files.tutum.co/packages/docker/docker-${DOCKER_VERSION}
+# Target config
+DOCKER_DIR="${DOCKER_DIR:-/usr/lib/tutum}"
+TARGET_DOCKER_BINARY="${TARGET_DOCKER_BINARY:-${DOCKER_DIR}/docker.new}"
+TARGET_DOCKER_SIGNATURE="${TARGET_DOCKER_SIGNATURE:-${DOCKER_DIR}/docker.new.sig}"
 
-echo "=> Downloading docker signature"
-curl -sSOL https://files.tutum.co/packages/docker/docker-${DOCKER_VERSION}.sig
+echo "=> Downloading docker binary"
+curl -OL $DOCKER_BINARY_URL
 
 echo "=> Checking MD5 of docker binary"
-curl -sSL https://files.tutum.co/packages/docker/docker-${DOCKER_VERSION}.md5 | md5sum -c -
+curl -L $DOCKER_BINARY_MD5_URL | md5sum -c -
 echo "=> MD5 matched"
 
+echo "=> Downloading docker signature"
+curl -OL $DOCKER_BINARY_SIGNATURE_URL
+
 mkdir -p ${DOCKER_DIR}
-mv docker-${DOCKER_VERSION} ${DOCKER_FILENAME}
-mv docker-${DOCKER_VERSION}.sig ${DOCKER_SIG_FILENAME}
-chmod +x ${DOCKER_FILENAME}
-echo "=> Copy docker binary signature to ${DOCKER_DIR}"
-cp -f ${DOCKER_SIG_FILENAME} ${DOCKER_DIR}
-echo "=> Copy docker binary to ${DOCKER_DIR}"
-cp -f ${DOCKER_FILENAME} ${DOCKER_DIR}
+chmod +x ${DOCKER_BINARY_FILENAME}
+echo "=> Copy docker binary signature to ${TARGET_DOCKER_SIGNATURE}"
+cp -f ${DOCKER_BINARY_FILENAME}.sig ${TARGET_DOCKER_SIGNATURE}
+echo "=> Copy docker binary to ${TARGET_DOCKER_BINARY}"
+cp -f ${DOCKER_BINARY_FILENAME} ${TARGET_DOCKER_BINARY}
 echo "=> Done"
